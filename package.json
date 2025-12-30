@@ -1,0 +1,54 @@
+{
+  "name": "amans_repuls_client",
+  "productName": "Amans_Repuls_Client",
+  "version": "1.21.1",
+  "description": "Repuls.io client with Discord RPC and optimized performance",
+  "author": "AmanLovesCats",
+  "main": "aman.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AmanLovesCats/Amans-Repuls-Client.git"
+  },
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "build:linux": "electron-builder --linux",
+    "build:all": "electron-builder --win --linux"
+  },
+  "build": {
+    "appId": "com.aman.repulsclient",
+    "productName": "Amans Repuls Client",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "aman.js",
+      "node_modules/**/*",
+      "assets/**/*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icons/icon.ico"
+    },
+    "linux": {
+      "target": [
+        "deb",
+        "rpm"
+      ],
+      "icon": "assets/icons/icon.png"
+    }
+  },
+  "dependencies": {
+    "axios": "^1.13.2",
+    "discord-rpc": "^4.0.1",
+    "electron-localshortcut": "^3.2.1",
+    "electron-squirrel-startup": "^1.0.1",
+    "electron-updater": "^6.6.2",
+    "update-electron-app": "^3.1.2"
+  },
+  "devDependencies": {
+    "electron": "^39.2.7",
+    "electron-builder": "^24.13.3"
+  }
+}
