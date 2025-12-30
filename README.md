@@ -12,7 +12,7 @@ New Features:
 
 Google login support was improved, there is an attempt to force webGPU but it most likely won't work, that's about it.
 
-REPULS.IO is a game developed by [@developer-docski](https://github.com/tahirG?tab=sponsoring). This is just a native client made by me so that you can use the tiny benefits of a client before its release. Currently supports Windows(V1.21.1 Released)
+REPULS.IO is a game developed by [@developer-docski](https://github.com/tahirG?tab=sponsoring). This is just a native client made by me so that you can use the tiny benefits of a client before its release. Currently supports Windows(V1.21.1 Released). THIS IS AN UNOFFICIAL CLIENT NOT AFFILIATED TO DOCSKI.
 
 
 ## What this client does:
