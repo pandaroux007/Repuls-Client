@@ -7,7 +7,7 @@
   "main": "aman.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/AmanLovesCats/Amans-Repuls-Client.git"
+    "url": "https://github.com/AmanLovesCats/Repuls-Client"
   },
   "scripts": {
     "start": "electron .",

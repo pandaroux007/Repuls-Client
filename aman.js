@@ -72,7 +72,7 @@ function updateRPC() {
 
     let details = 'A Docski Game';
     let state = 'Main Menu';
-    let buttons = [{ label: 'View Client', url: 'https://github.com/AmanLovesCats/Amans-Repuls-Client' }];
+    let buttons = [{ label: 'View Client', url: 'https://github.com/AmanLovesCats/Repuls-Client' }];
     let party = undefined;
     let secrets = undefined;
 
