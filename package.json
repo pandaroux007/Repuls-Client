@@ -1,7 +1,7 @@
 {
   "name": "amans_repuls_client",
   "productName": "Amans_Repuls_Client",
-  "version": "1.21.2",
+  "version": "1.21.3",
   "description": "Repuls.io client with Discord RPC and optimized performance",
   "author": "AmanLovesCats",
   "main": "aman.js",

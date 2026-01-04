@@ -1,4 +1,6 @@
-# Version 1.21.1 Release
+# Version 1.21.3 Release
+
+- Added discord bot and client linking which automatically allows you to see your account stats anytime on discord directly.(Use F12)
 
 This new version comes with extra features to bump the purpose of a client. Yes it still has performance upgrades but it has been noticed that these upgrades may vary from user to user, in my case the FPS has an increment of almost 50-60 frames.
 
