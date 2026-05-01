@@ -10,11 +10,6 @@ updateElectronApp();
 const CLIENT_URL = "https://github.com/AmanLovesCats/Repuls-Client"
 const RPC_CLIENT_ID = "1429162289206001677";
 const GAME_URL = "https://repuls.io";
-const REGION_APIS = {
-    as01: "https://rep.as01.docskigames.com/serverList?version",
-    eu01: "https://rep.eu01.docskigames.com/serverList?version",
-    na01: "https://rep.na01.docskigames.com/serverList?version",
-};
 
 const sessionStartTime = Date.now();
 let win;
@@ -69,21 +64,21 @@ app.on("certificate-error", (event, webContents, url, error, certificate, callba
 });
 
 // ------------------------------------ RPC connection to Discord
-function setupDiscordRPC() {
+async function setupDiscordRPC() {
     rpc = new RPC.Client({ transport: "ipc" });
-    rpc.on("ready", () => {
-        updateRPC();
-        refreshServerData();
-        setInterval(() => {
+    rpc.on("ready", async () => {
+        await updateRPC();
+        await refreshServerData();
+        setInterval(async () => {
             if (gameState.current === "Playing" && gameState.serverInfo.region) {
-                refreshServerData();
+                await refreshServerData();
             }
         }, 30000);
     });
     rpc.login({ clientId: RPC_CLIENT_ID }).catch(console.error);
 }
 
-function updateRPC() {
+async function updateRPC() {
     if (!rpc) return;
 
     let details = "A Docski Game";
@@ -91,9 +86,8 @@ function updateRPC() {
     let buttons = [{ label: "View Client", url: CLIENT_URL }];
     let party = undefined;
     let secrets = undefined;
-    console.log("rpc update", gameState.current, gameState.serverInfo.region, gameState.serverInfo.port)
+
     if (gameState.current === "Playing" && gameState.serverInfo.region && gameState.serverInfo.port) {
-        console.log("setup rpc info")
         details = `${gameState.serverInfo.mode || "Combat"} on ${gameState.serverInfo.map || "Repuls"}`;
         state = `Match: ${gameState.serverInfo.players}/${gameState.serverInfo.maxPlayers} players`;
 
@@ -113,7 +107,7 @@ function updateRPC() {
     }
 
     try {
-        rpc.setActivity({
+        await rpc.setActivity({
             details: details,
             state: state,
             startTimestamp: sessionStartTime,
@@ -133,16 +127,15 @@ function updateRPC() {
 async function refreshServerData() {
     if (gameState.current !== "Playing" || !gameState.serverInfo.region) return;
     try {
-        const apiUrl = REGION_APIS[gameState.serverInfo.region];
-        const response = await axios.get(apiUrl);
+        const response = await axios.get(`https://rep.${gameState.serverInfo.region}.docskigames.com/serverList`);
         const servers = response.data.serverList;
         const match = servers.find(s => s.webPort === gameState.serverInfo.port.toString());
         if (match) {
             gameState.serverInfo.map = match.gameMap;
             gameState.serverInfo.mode = match.gameMode;
             gameState.serverInfo.players = parseInt(match.playerCount, 10);
-            gameState.serverInfo.maxPlayers = parseInt(match.maxPlayers, 10);;
-            updateRPC();
+            gameState.serverInfo.maxPlayers = parseInt(match.maxPlayers, 10);
+            await updateRPC();
         }
     } catch (error) {
         console.error("[API Error]", error.message);
@@ -194,7 +187,7 @@ function setupDebugger(window) {
     window.webContents.debugger.sendCommand("Network.enable");
 }
 
-app.on("ready", () => {
+app.on("ready", async () => {
     win = new BrowserWindow({
         width: 1920, height: 1080,
         fullscreen: false,
@@ -205,12 +198,12 @@ app.on("ready", () => {
         }
     });
 
-    setupDebugger(win);
+    await setupDebugger(win);
 
     win.loadURL(GAME_URL);
     win.removeMenu();
 
-    win.webContents.on("console-message", (event, level, message, line, sourceId) => {
+    win.webContents.on("console-message", async (event, level, message, line, sourceId) => {
         if (message) {
             /*
             [friend] status: {"ev":"setOnlineStatus","data":"{\"code\":2,\"msg\":\"In Menu\"}"}
@@ -227,16 +220,16 @@ app.on("ready", () => {
                         gameState.current = data.msg; // In Menu
                         gameState.serverInfo.region = null;
                         gameState.serverInfo.port = null;
-                        updateRPC();
+                        await updateRPC();
                     } else if (data.code === 6) {
                         gameState.current = "Playing";
                         const match = data.msg.match(/^(\w+)\|(\d+)$/);
                         if (match) {
                             gameState.serverInfo.region = match[1];
                             gameState.serverInfo.port = parseInt(match[2], 10);
-                            refreshServerData();
+                            await refreshServerData();
                         }
-                        updateRPC();
+                        await updateRPC();
                     }
                 } catch (error) {
                     console.error("Error parsing friend status:", error);
@@ -279,9 +272,9 @@ app.on("ready", () => {
             buttons: ["OK"]
         });
     });
-    shortcut.register(win, "F6", () => {
+    shortcut.register(win, "F6", async () => {
         gameState.showJoinButton = !gameState.showJoinButton;
-        updateRPC();
+        await updateRPC();
         dialog.showMessageBox(win, {
             type: "info",
             title: "RPC Toggle",
@@ -315,5 +308,5 @@ app.on("ready", () => {
         });
     });
 
-    setupDiscordRPC();
+    await setupDiscordRPC();
 });
